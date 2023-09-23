@@ -9,30 +9,31 @@ def get_filepath():
         else:
             print("File not found. Please provide a valid file path.")
 
-
+5
 class CSVFileManager:
     def __init__(self, filename):
         self.filename = filename
+        self.df = None
 
     def read_sheet(self):
         try:
-            df = pd.read_csv(self.filename, delimiter=';', encoding= 'unicode_escape')
-            return df
+            self.df = pd.read_csv(self.filename, delimiter=';', encoding= 'unicode_escape')
+            return self.df
         except FileNotFoundError:
             print("File not found.")
 
-    def sort_data(self,data):
+    def sort_data(self):
         checker = True
         while checker:
             try:
                 column = input("Specify column to sort by: ")
-                if column in data.columns:
+                if column in self.df.columns:
                     res1 = input("Ascending or descending (A/D)")
                     if res1 == "A":
-                        sorted_data = data.sort_values(by=column)
+                        self.df = self.df.sort_values(by=column)
                         checker = False
                     elif res1=="D":
-                        sorted_data = data.sort_values(by=column, ascending= False)
+                        self.df = self.df.sort_values(by=column, ascending= False)
                         checker = False
                     else:
                         print("Wrong value. Choose again")
@@ -40,30 +41,30 @@ class CSVFileManager:
                     print("There is no such column. Try again")
             except Exception as e:   
                 print("Error, ", e)
-        return sorted_data
+        return self.df
     
-    def remove_na(self,data):
+    def remove_na(self):
         try:
-            cleaned_data = data.dropna()
+            self.df = self.df.dropna()
             print("Cleaning completed")
-            return cleaned_data
+            return self.df
         except Exception as e:
             print("Error", e)
 
-    def remove_duplicates(self,data):
+    def remove_duplicates(self):
         try:
-            cleaned_data = data.drop_duplicates()
+            self.df = self.df.drop_duplicates()
             print("Removing duplicates completed")
-            return cleaned_data
+            return self.df
         except Exception as e:
             print("Error", e)
     
-    def write_data(self, data):
+    def write_data(self):
         checker2 = True
         while checker2:
             try:
                 where_to_write=input("Where to write new file (full path and name): ")
-                data.to_csv(where_to_write, encoding='utf-8', sep=';', index=False)
+                self.df.to_csv(where_to_write, encoding='utf-8', sep=';', index=False)
                 print("Data written succesfully") 
                 checker2=False
             except Exception as e:
@@ -85,16 +86,16 @@ def main():
         print("5. Quit")
         menu_response = input("Choose number 1-4: ")
         if menu_response=="1":
-            new_data = manago.sort_data(new_data)
+            new_data = manago.sort_data()
             print(new_data)
         elif menu_response=="2":
-            new_data = manago.remove_na(new_data)
+            new_data = manago.remove_na()
             print(new_data)
         elif menu_response =="3":
-            new_data = manago.remove_duplicates(new_data)
+            new_data = manago.remove_duplicates()
             print(new_data)
         elif menu_response == "4":
-            saved_file = manago.write_data(new_data)
+            saved_file = manago.write_data()
             checker = False
         elif menu_response=="5":
             print("quitting")
