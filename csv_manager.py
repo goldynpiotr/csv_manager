@@ -79,9 +79,9 @@ class CSVFileManager:
 def main():
     checker = True
     path = get_filepath()
-    manago = CSVFileManager(path)
-    new_data = manago.read_sheet()
-    print(manago.read_sheet())
+    file1 = CSVFileManager(path)
+    new_data = file1.read_sheet()
+    print(file1.read_sheet())
     while checker:
         
         print("****************")
@@ -92,16 +92,16 @@ def main():
         print("5. Quit")
         menu_response = input("Choose number 1-5: ")
         if menu_response=="1":
-            new_data = manago.sort_data()
+            new_data = file1.sort_data()
             print(new_data)
         elif menu_response=="2":
-            new_data = manago.remove_na()
+            new_data = file1.remove_na()
             print(new_data)
         elif menu_response =="3":
-            new_data = manago.remove_duplicates()
+            new_data = file1.remove_duplicates()
             print(new_data)
         elif menu_response == "4":
-            saved_file = manago.write_data()
+            saved_file = file1.write_data()
             checker = False
         elif menu_response=="5":
             print("quitting")
