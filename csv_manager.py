@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+from csv import Sniffer
 
 def get_filepath():
     while True:
@@ -9,19 +10,24 @@ def get_filepath():
         else:
             print("File not found. Please provide a valid file path.")
 
-
 class CSVFileManager:
     def __init__(self, filename):
         self.filename = filename
         self.df = None
+        self.delimiter = None
 
     def read_sheet(self):
         try:
-            self.df = pd.read_csv(self.filename, delimiter=';', encoding= 'unicode_escape')
+            with open(self.filename, 'r', newline='') as file:
+                sample = file.read(4096)
+                dialect = Sniffer().sniff(sample)
+                self.delimiter = dialect.delimiter
+    
+            self.df = pd.read_csv(self.filename, delimiter=self.delimiter, encoding= 'unicode_escape')
             return self.df
         except FileNotFoundError:
             print("File not found.")
-
+            
     def sort_data(self):
         checker = True
         while checker:
@@ -64,7 +70,7 @@ class CSVFileManager:
         while checker2:
             try:
                 where_to_write=input("Where to write new file (full path and name): ")
-                self.df.to_csv(where_to_write, encoding='utf-8', sep=';', index=False)
+                self.df.to_csv(where_to_write, encoding='utf-8', sep=self.delimiter, index=False)
                 print("Data written succesfully") 
                 checker2=False
             except Exception as e:
@@ -84,7 +90,7 @@ def main():
         print("3. Remove duplicates")
         print("4. Save&Quit")
         print("5. Quit")
-        menu_response = input("Choose number 1-4: ")
+        menu_response = input("Choose number 1-5: ")
         if menu_response=="1":
             new_data = manago.sort_data()
             print(new_data)
